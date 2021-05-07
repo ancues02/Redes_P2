@@ -11,6 +11,7 @@ int main(int argc, char** argv){
     }
     struct addrinfo hints;
     struct addrinfo *res;
+
     //reservo memoria para un addrinfo con valor 0
     memset((void*) &hints, 0, sizeof(addrinfo));
 
@@ -27,9 +28,9 @@ int main(int argc, char** argv){
     for(auto i = res; i != nullptr; i = i->ai_next){
         char host[NI_MAXHOST];
         char serv[NI_MAXSERV];
-        int nameInfo=getnameinfo(i->ai_addr, i->ai_addrlen,host, NI_MAXHOST, serv, NI_MAXSERV, NI_NUMERICHOST | NI_NUMERICSERV);
+        int nameInfo=getnameinfo(i->ai_addr, i->ai_addrlen,host, NI_MAXHOST, nullptr, NI_MAXSERV, NI_NUMERICHOST );
         if(nameInfo != 0){
-            std::cerr < "Error al usar getnameinfo\n";
+            std::cerr << "[getnameinfo]: coger la informacion\n";
         }
         std::cout << "Host: "<< host  <<" Family " << i->ai_family << " SocketType: "<< i->ai_socktype <<"\n";        
     }
