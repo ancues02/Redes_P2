@@ -32,8 +32,11 @@ int main(int argc, char** argv){
         std::cerr << "[socket]: creacion socket\n";
         return -1;
     }
-    bind(_socket,res->ai_addr,res->ai_addrlen);
-
+    int b=bind(_socket,res->ai_addr,res->ai_addrlen);
+    if(b==-1){
+        std::cerr << "[bind]: uso de bind\n";
+        return -1;
+    }
     freeaddrinfo(res);
 
     char host[NI_MAXHOST];
@@ -42,53 +45,49 @@ int main(int argc, char** argv){
     struct sockaddr cliente;
     socklen_t longCliente=sizeof(sockaddr);
 
-    char buffer;
-
-    int bytes=recvfrom(_socket, buffer, 80, 0, &cliente, &longCliente);
-    if(bytes == -1){
-        std::cerr << "[recvfrom]: lectura mensaje socket\n";
-        return -1;
-    }
-    getnameinfo(&cliente, longCliente, host, NI_MAXHOST, serv, NI_MAXSERV, NI_NUMERICSERV || NI_NUMERICHOST);
+    char buffer[1];
+    char buffMens[80];
+   
+    time_t _time;
+    struct tm *info;
+    time(&_time);
+    info= localtime(&_time);
     //si es q se acaba la conexion
-    while(buffer != 'q'){
+    while(buffer[0] != 'q'){
 
-
-        if(buffer=='d'){
-            /*int send = sendto(_socket, date(), bytes, 0, &cliente, longCliente);
-            if(send == -1){
-                std::cerr << "[sendto]: error al mandar el mensaje\n";
-                return -1;
-            }*/
+        int bytes=recvfrom(_socket, buffer, 10, 0, &cliente, &longCliente);
+        if(bytes == -1){
+            std::cerr << "[recvfrom]: lectura mensaje socket\n";
+            return -1;
         }
-        else if(buffer=='t'){
-            time_t _time;
-            struct tm* info;
-            time(&_time);
-            info= localtime(&_time);
-            char* hora;
-            int horas= strftime(hora,255, "%X %P" , info);
-            int send = sendto(_socket, horas, bytes, 0, &cliente, longCliente);
+        getnameinfo(&cliente, longCliente, host, NI_MAXHOST, serv, NI_MAXSERV, NI_NUMERICSERV || NI_NUMERICHOST);
+
+        if(buffer[0] == 'd'){
+            int diaSize =strftime(buffMens,255, "%X %p" , info);
+            int send = sendto(_socket, buffMens, diaSize+1, 0, &cliente, longCliente);
             if(send == -1){
                 std::cerr << "[sendto]: error al mandar el mensaje\n";
                 return -1;
             }
         }
-        else{
-            std::cout << "Comando no soportado" << buffer <<"\n";
-            int send = sendto(_socket, "Comando no declarado", bytes, 0, &cliente, longCliente);
+        else if(buffer[0] == 't'){
+            int horaSize = strftime(buffMens,255, "%Y-%m-%d" , info);
+            int send = sendto(_socket, buffMens, horaSize+1, 0, &cliente, longCliente);
             if(send == -1){
                 std::cerr << "[sendto]: error al mandar el mensaje\n";
                 return -1;
             }
         }
-
-
-        /*std::cout << "Host: " << host << "Port: "<< serv << "\n";
-        std::cout << "Datos: " << buffer << "\n";*/
-
+        else if (buffer[0] != 'q'){            
+             int send = sendto(_socket, "Comando no declarado", 21, 0, &cliente, longCliente);
+            if(send == -1){
+                std::cerr << "[sendto]: error al mandar el mensaje\n";
+                return -1;
+            }
+        }
+        std::cout << bytes << " bytes de "<< host<<":"<<serv<<"\n"; 
     }
-
+    std::cout << "Saliendo...\n";
     close(_socket);
 
     return 0;
