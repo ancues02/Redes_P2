@@ -62,7 +62,7 @@ int main(int argc, char** argv){
         }
         getnameinfo(&cliente, longCliente, host, NI_MAXHOST, serv, NI_MAXSERV, NI_NUMERICSERV || NI_NUMERICHOST);
 
-        if(buffer[0] == 'd'){
+        if(buffer[0] == 't'){
             int diaSize =strftime(buffMens,255, "%X %p" , info);
             int send = sendto(_socket, buffMens, diaSize+1, 0, &cliente, longCliente);
             if(send == -1){
@@ -70,7 +70,7 @@ int main(int argc, char** argv){
                 return -1;
             }
         }
-        else if(buffer[0] == 't'){
+        else if(buffer[0] == 'd'){
             int horaSize = strftime(buffMens,255, "%Y-%m-%d" , info);
             int send = sendto(_socket, buffMens, horaSize+1, 0, &cliente, longCliente);
             if(send == -1){
@@ -88,7 +88,9 @@ int main(int argc, char** argv){
         std::cout << bytes << " bytes de "<< host<<":"<<serv<<"\n"; 
     }
     std::cout << "Saliendo...\n";
-    close(_socket);
-
+    if(close(_socket)==-1){
+        std::cerr << "[recvfrom]: cierre socket\n";
+        return -1;
+    }    
     return 0;
 }
