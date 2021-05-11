@@ -89,7 +89,7 @@ int main(int argc, char** argv){
     }
     std::cout << "Saliendo...\n";
     if(close(_socket)==-1){
-        std::cerr << "[recvfrom]: cierre socket\n";
+        std::cerr << "[close]: cierre socket\n";
         return -1;
     }    
     return 0;

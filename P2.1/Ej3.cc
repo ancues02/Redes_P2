@@ -70,7 +70,7 @@ int main(int argc, char** argv){
     freeaddrinfo(res2);
 
     if(close(_socket)==-1){
-        std::cerr << "[recvfrom]: cierre socket\n";
+        std::cerr << "[close]: cierre socket\n";
         return -1;
     }
     return 0;
