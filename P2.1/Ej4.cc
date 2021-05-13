@@ -66,7 +66,6 @@ int main(int argc, char** argv){
     std::cout << "Conexion desde " << host << " " << serv << "\n"; 
 
     char buffer[80];
-    //si es q se acaba la conexion
     while(true){
         int bytes=recv(cliente_socket, buffer, 79, 0);
         if(bytes == 0){
