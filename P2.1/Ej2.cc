@@ -78,7 +78,8 @@ int main(int argc, char** argv){
                 return -1;
             }
         }
-        else if (buffer[0] != 'q'){            
+        else if (buffer[0] != 'q'){  
+            std::cout << "Comando no declarado\n";           
              int send = sendto(_socket, "Comando no declarado", 21, 0, &cliente, longCliente);
             if(send == -1){
                 std::cerr << "[sendto]: error al mandar el mensaje\n";
