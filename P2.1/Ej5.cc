@@ -15,12 +15,12 @@ int main(int argc, char** argv){
     }
     struct addrinfo hints;
     struct addrinfo *res;
-    //reservo memoria para un addrinfo con valor 0
+    //reservo memoria para un addrinfo 
     memset((void*) &hints, 0, sizeof(addrinfo));
 
-    //cojo IPV4 
+    //IPV4 
     hints.ai_family = AF_INET;
-    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_socktype = SOCK_STREAM;//TCP
 
     int rc = getaddrinfo(argv[1], argv[2], &hints, &res);//puerto del cliente diferente al del servidor
 
@@ -36,9 +36,8 @@ int main(int argc, char** argv){
     }
     //no hace falta hacer bind porque ya lo hace el servidor
     
-    freeaddrinfo(res);
 
-    rc = getaddrinfo(argv[1], argv[2], &hints, &res);//pongo ahora la informacion del servidor
+    //rc = getaddrinfo(argv[1], argv[2], &hints, &res);//pongo ahora la informacion del servidor
 
     if(rc == -1){
         std::cerr << "[getaddrinfo] "<< gai_strerror(rc) << "\n";
@@ -69,7 +68,7 @@ int main(int argc, char** argv){
         }
         int bytes = recv(_socket, buffer, 80, 0);
         if(bytes==-1){
-            std::cerr << "[recv] Error al mandar el recibir el mensaje\n";
+            std::cerr << "[recv] Error al recibir el mensaje\n";
             return -1;
         }
         if( buffer[0] == 'Q' && buffer[1]=='\0')//cierre del while si recibo una Q
@@ -78,6 +77,7 @@ int main(int argc, char** argv){
             std::cout << buffer<<"\n";
         
     }
+    freeaddrinfo(res);
     if(close(_socket)==-1){
         std::cerr << "[close]: cierre socket\n";
         return -1;

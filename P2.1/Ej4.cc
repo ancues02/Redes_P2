@@ -78,7 +78,7 @@ int main(int argc, char** argv){
         }
 
         if(send(cliente_socket,buffer, bytes,0) < 0){
-            std::cout <<"[sendto]: Error al mandar el mensaje";
+            std::cout <<"[send]: Error al mandar el mensaje";
             return -1;
         }
        

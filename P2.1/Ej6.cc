@@ -10,7 +10,7 @@
 #define MAX_THREAD 5
 
 //Cada mensaje lo recibe un hilo diferente. Hay un maximo de 5 hilos. 
-//El cliente se cierra solo si el cliente se escribe la q.
+//El cliente se cierra solo si en la consola del cliente se escribe la q.
 
 class ThreadUDP{
     public:
@@ -58,7 +58,8 @@ class ThreadUDP{
                     continue;//return -1;//no funciona, saltamos la linea
                 }
             }
-            else if (buffer[0] != 'q'){            
+            else if (buffer[0] != 'q'){    
+                std::cout << "Comando no declarado\n";        
                 int send = sendto(_socket, "Comando no declarado", 21, 0, &cliente, longCliente);
                 if(send == -1){
                     std::cerr << "[sendto]: error al mandar el mensaje\n";
@@ -80,10 +81,10 @@ int main(int argc, char** argv){
     }
     struct addrinfo hints;
     struct addrinfo *res;
-    //reservo memoria para un addrinfo con valor 0
+    //reservo memoria para un addrinfo 
     memset((void*) &hints, 0, sizeof(addrinfo));
 
-    //cojo IPV4 
+    //IPV4 
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_DGRAM;//UDP
 
@@ -104,7 +105,7 @@ int main(int argc, char** argv){
         std::cerr << "[bind]: uso de bind\n";
         return -1;
     }
-     freeaddrinfo(res);
+    freeaddrinfo(res);
 
 
     for(int i=0; i< MAX_THREAD; ++i){
