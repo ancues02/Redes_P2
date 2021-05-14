@@ -22,8 +22,7 @@ int main(int argc, char** argv){
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;//TCP
 
-    int rc = getaddrinfo(argv[1], argv[2], &hints, &res);//puerto del cliente diferente al del servidor
-
+    int rc = getaddrinfo(argv[1], argv[2], &hints, &res);
     if(rc != 0){
         std::cerr << "[getaddrinfo]: " << gai_strerror(rc) << "\n";
         return -1;
@@ -36,13 +35,6 @@ int main(int argc, char** argv){
     }
     //no hace falta hacer bind porque ya lo hace el servidor
     
-
-    //rc = getaddrinfo(argv[1], argv[2], &hints, &res);//pongo ahora la informacion del servidor
-
-    if(rc == -1){
-        std::cerr << "[getaddrinfo] "<< gai_strerror(rc) << "\n";
-        return -1;
-    }
 
     
     char host[NI_MAXHOST];

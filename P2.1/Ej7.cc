@@ -29,16 +29,17 @@ class ThreadTCP{
                 std::cout << "[recv] Error en recv\n";
                 break;
             }
-
+            std::cout << bytes<<"\n";
             if(send(_socket,buffer, bytes,0) < 0){
                 std::cout <<"[sendto]: Error al mandar el mensaje";
                 break;
             }
+            sleep(3);
             
         }
         if(close(_socket)==-1){
             std::cerr << "[close]: cierre socket cliente\n";
-            //return -1;
+            return ;
         }  
     }
     private:
@@ -104,9 +105,8 @@ int main(int argc, char** argv){
         getnameinfo(&cliente, longCliente, host, NI_MAXHOST, serv, NI_MAXSERV, NI_NUMERICSERV || NI_NUMERICHOST);
         std::cout << "Conexion desde " << host << " " << serv << "\n"; 
         
-        ThreadTCP* miThread=new ThreadTCP(_socket);
-
-        std::thread([&miThread](){ miThread->do_message(); delete miThread;  }).detach();
+        ThreadTCP* miThread=new ThreadTCP(cliente_socket);
+        std::thread([miThread](){ miThread->do_message(); delete miThread;}).detach();
     
     }
     if(close(_socket)==-1){

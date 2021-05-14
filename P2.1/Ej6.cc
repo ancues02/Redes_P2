@@ -38,7 +38,7 @@ class ThreadUDP{
             sleep(3);
             if(bytes == -1){
                 std::cerr << "[recvfrom]: lectura mensaje socket\n";
-                continue;//return -1;//no funciona, saltamos la linea
+                continue;//salto la linea
             }
             getnameinfo(&cliente, longCliente, host, NI_MAXHOST, serv, NI_MAXSERV, NI_NUMERICSERV || NI_NUMERICHOST);
 
@@ -47,7 +47,7 @@ class ThreadUDP{
                 int send = sendto(_socket, buffMens, diaSize+1, 0, &cliente, longCliente);
                 if(send == -1){
                     std::cerr << "[sendto]: error al mandar el mensaje\n";
-                    continue;//return -1;//no funciona, saltamos la linea
+                    continue;// salto la linea
                 }
             }
             else if(buffer[0] == 'd'){
@@ -55,7 +55,7 @@ class ThreadUDP{
                 int send = sendto(_socket, buffMens, horaSize+1, 0, &cliente, longCliente);
                 if(send == -1){
                     std::cerr << "[sendto]: error al mandar el mensaje\n";
-                    continue;//return -1;//no funciona, saltamos la linea
+                    continue;// salto la linea
                 }
             }
             else if (buffer[0] != 'q'){    
@@ -63,7 +63,7 @@ class ThreadUDP{
                 int send = sendto(_socket, "Comando no declarado", 21, 0, &cliente, longCliente);
                 if(send == -1){
                     std::cerr << "[sendto]: error al mandar el mensaje\n";
-                    continue;//return -1;//no funciona, saltamos la linea
+                    continue;//salto la linea
                 }
             }
             std::cout << "Thread " << std::this_thread::get_id() << " : " << bytes << " bytes de "<< host<<":"<<serv<<"\n"; 
@@ -111,10 +111,9 @@ int main(int argc, char** argv){
     for(int i=0; i< MAX_THREAD; ++i){
         ThreadUDP* miThread=new ThreadUDP(_socket);
 
-        std::thread([&miThread](){ miThread->do_message(); delete miThread;  }).detach();
+        std::thread([miThread](){ miThread->do_message(); delete miThread;}).detach();
 
     }
-    //char* buff;
     char buff[80];
     //si es q se acaba la conexion
     do{
