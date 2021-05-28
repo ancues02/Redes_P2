@@ -10,6 +10,8 @@
 #include <unistd.h>
 
 
+//el comando od representa en octal por defecto el archivo
+//
 class Jugador: public Serializable
 {
 public:
@@ -34,7 +36,6 @@ public:
         tmp+=sizeof(int16_t);
 
         memcpy(tmp, &y, sizeof(int16_t));
-        //tmp+=sizeof(int16_t);
     }
 
     int from_bin(char * data)
@@ -48,7 +49,6 @@ public:
         tmp+=sizeof(int16_t);
 
         memcpy(&y, tmp, sizeof(int16_t));
-        //tmp+=sizeof(int16_t);
 
         return 0;
     }
@@ -74,7 +74,9 @@ int main(int argc, char **argv)
         return -1;
     }
     one_w.to_bin();//se serializa
-    if(write(fd, one_w.data(),one_w.size()) == -1);{//guardar en el archivo
+
+    //write(fd, one_w.data(),one_w.size());
+    if( write(fd, one_w.data(),one_w.size()) == -1){//guardar en el archivo
         std::cerr << "[write]: error en write\n";
         return -1;
     }
@@ -84,7 +86,27 @@ int main(int argc, char **argv)
     }
 
 
+    fd = open("./data_jugador", O_RDONLY, 0444);//se consigue el fichero
+    if(fd == -1 ){
+        std::cerr << "[open]: error en open del archivo ./data_jugador\n";
+        return -1;
+    }
+    char* data ;
 
+    if(read(fd,data,one_w.size()) == -1){
+        std::cerr << "[read]: error en read\n";
+        return -1;
+    }
+
+    one_r.from_bin(data);
+
+    std::cout << "Jugador des-serializado:  name = " << one_r.name << 
+    " pos x: "<< one_r.x << " pos y: " << one_r.y <<"\n";
+
+    if(close(fd) == -1){
+        std::cerr << "[close]: error al cerrar el archivo \n";
+        return -1;
+    }
 
     return 0;
 }
