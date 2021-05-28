@@ -54,11 +54,43 @@ void ChatServer::do_messages()
          * crear un unique_ptr con el objeto socket recibido y usar std::move
          * para añadirlo al vector
          */
-
+       
         //Recibir Mensajes en y en función del tipo de mensaje
         // - LOGIN: Añadir al vector clients
         // - LOGOUT: Eliminar del vector clients
         // - MESSAGE: Reenviar el mensaje a todos los clientes (menos el emisor)
+    
+        ChatMessage msg;
+        Socket* client;
+        if(socket.recv(msg, client) != 0) continue;
+
+
+
+      
+        switch(msg.type){
+            case ChatMessage::LOGIN:
+                clients.push_back(std::move(std::unique_ptr<Socket>(client)));                
+            break;
+            case ChatMessage::LOGOUT:{               
+               auto it = clients.begin();
+               while(it != clients.end() ) {
+                   if(client == it->get()){
+                        clients.erase(it);
+                        it->release();
+                        break;
+                   }
+                }
+            }
+            break;
+            case ChatMessage::MESSAGE:{
+                for(auto it = clients.begin(); it != clients.end() ; ++it){
+                    if(client != it->get())
+                        socket.send(msg,*it->get());
+                }
+            }
+            break;
+        }
+
     }
 }
 
