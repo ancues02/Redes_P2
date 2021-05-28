@@ -68,17 +68,20 @@ int main(int argc, char **argv)
     Jugador one_r("", 0, 0);
     Jugador one_w("Player_ONE", 123, 987);
 
-    // 1. Serializar el objeto one_w
-    // 2. Escribir la serialización en un fichero
-    // 3. Leer el fichero
-    // 4. "Deserializar" en one_r
-    // 5. Mostrar el contenido de one_r
-
     int fd = open("./data_jugador", O_CREAT | O_TRUNC | O_RDWR, 0666);//se consigue el fichero
-
+    if(fd == -1 ){
+        std::cerr << "[open]: error en open del archivo ./data_jugador\n";
+        return -1;
+    }
     one_w.to_bin();//se serializa
-    write(fd, one_w.data(),one_w.size());//guardar en el archivo
-    close(fd);
+    if(write(fd, one_w.data(),one_w.size()) == -1);{//guardar en el archivo
+        std::cerr << "[write]: error en write\n";
+        return -1;
+    }
+    if(close(fd) == -1){
+        std::cerr << "[close]: error al cerrar el archivo \n";
+        return -1;
+    }
 
 
 
