@@ -7,7 +7,7 @@ Socket::Socket(const char * address, const char * port):sd(-1)
 {
     //Construir un socket de tipo AF_INET y SOCK_DGRAM usando getaddrinfo.
     //Con el resultado inicializar los miembros sd, sa y sa_len de la clase
-     struct addrinfo hints;
+    struct addrinfo hints;
     struct addrinfo *res;
     //reservo memoria para un addrinfo con valor 0
     memset((void*) &hints, 0, sizeof(addrinfo));
@@ -66,7 +66,7 @@ int Socket::send(Serializable& obj, const Socket& sock)
     obj.to_bin();
     
 
-    int send = sendto(sock.sd, obj.data(), obj.size(), 0, &sock.sa, sock.sa_len);
+    int send = sendto(sd, obj.data(), obj.size(), 0, &sock.sa, sock.sa_len);
     if(send == -1){
         std::cerr << "[sendto]: error al mandar el mensaje\n";
         return -1;
