@@ -48,7 +48,6 @@ int ChatMessage::from_bin(char * bobj)
 
 void ChatServer::do_messages()
 {
-    std::cout << "nuevo cliente\n";
     
     ChatMessage msg;
     Socket* client;
@@ -74,6 +73,7 @@ void ChatServer::do_messages()
 
         switch(msg.type){
             case ChatMessage::LOGIN:
+                std::cout << "Nuevo cliente: "<< msg.nick <<"\n";
                 clients.push_back(std::move(std::unique_ptr<Socket>(client)));                
             break;
             case ChatMessage::LOGOUT:
