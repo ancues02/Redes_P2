@@ -63,8 +63,7 @@ int Socket::send(Serializable& obj, const Socket& sock)
 {
     //Serializar el objeto
     //Enviar el objeto binario a sock usando el socket sd
-    obj.to_bin();
-    
+    obj.to_bin();    
 
     int send = sendto(sd, obj.data(), obj.size(), 0, &sock.sa, sock.sa_len);
     if(send == -1){
@@ -80,9 +79,14 @@ bool operator== (const Socket &s1, const Socket &s2)
     //Comparar los campos sin_family, sin_addr.s_addr y sin_port
     //de la estructura sockaddr_in de los Sockets s1 y s2
     //Retornar false si alguno difiere
-
+    std::cout << "COMPARATOR == ";
+    
     struct sockaddr_in *s1_in = (struct sockaddr_in* ) &s1.sa;
     struct sockaddr_in *s2_in = (struct sockaddr_in* ) &s2.sa;
+
+    std::cout <<s1_in->sin_family << "  " <<s2_in->sin_family <<"\n";
+    std::cout <<s1_in->sin_addr.s_addr << "  " <<s2_in->sin_addr.s_addr <<"\n";
+    std::cout <<s1_in->sin_port << "  " <<s2_in->sin_port <<"\n";
 
     return (s1_in->sin_family == s2_in->sin_family &&
     s1_in->sin_addr.s_addr == s2_in->sin_addr.s_addr && 
